@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "GS cli tool",
   "main": "index.js",
+  "bin": {
+    "green": "./bin/green.js"
+  },
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

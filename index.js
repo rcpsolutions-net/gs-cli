@@ -8,7 +8,7 @@ import createEmployeesCommand from './commands/employees.ts';
 const program = new Command();
 
 program
-  .name('gs')
+  .name('green')
   .version(pkg.version)
   .description(chalk.cyan.bold(pkg.description));
 
@@ -19,7 +19,7 @@ program
   .command('test')
   .description('A simple test command to check if the CLI is working.')
   .action(() => {
-    console.log(chalk.green('✅ Bullhorn CLI is set up correctly!'));
+    console.log(chalk.green('✅ GreenShades CLI is set up correctly!'));
   });
 
 async function main() {
