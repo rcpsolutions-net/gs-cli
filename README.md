@@ -122,8 +122,10 @@ greenshades placements details <placementId>    # Get a single placement
 ### Webhooks
 
 ```bash
-greenshades webhooks list                       # List all webhook subscriptions
-greenshades webhooks details <webhookId>        # Get a webhook subscription by ID
+greenshades webhooks list                                          # List all webhook subscriptions
+greenshades webhooks details <webhookId>                           # Get a webhook subscription by ID
+greenshades webhooks create <event-name> <callback-url> [hmac-key] # Create a new webhook subscription
+greenshades webhooks delete <id>                                   # Delete a webhook subscription
 ```
 
 ## Configuration
