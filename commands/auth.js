@@ -25,20 +25,20 @@ export default function createAuthCommand() {
         {
           type: 'input',
           name: 'clientId',
-          default: process.env.GREENSHADES_CLIENT_ID || 'jgjgjgjg-fd-dfasfdsafsa',
+          default: process.env.GREENSHADES_CLIENT_ID || 'client-id-placeholder',
           message: 'Enter your GS API Client ID:',
         },
         {
           type: 'password',
           name: 'clientSecret',
-          default: process.env.GREENSHADES_CLIENT_SECRET || 'KDFGJKLAJSALDF9jf4r8',
+          default: process.env.GREENSHADES_CLIENT_SECRET || 'client-secret-placeholder',
           message: 'Enter your GS API Client Secret:',
           mask: '*',
         },
         {
           type: 'input',
           name: 'workspaceId',
-          default: process.env.GREENSHADES_WORKSPACE_ID || '367437',
+          default: process.env.GREENSHADES_WORKSPACE_ID || 'workspace-id-placeholder',
           message: 'Enter your GS Workspace ID:',
         }
       ];
