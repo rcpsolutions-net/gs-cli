@@ -10,6 +10,7 @@ import createDepartmentCommand from './commands/department.ts';
 import createWebhooksCommand from './commands/webhooks.ts';
 import createLocationsCommand from './commands/locations.ts';
 import createPositionsCommand from './commands/positions.ts';
+import createPlacementsCommand from './commands/placements.ts';
 
 const program = new Command();
 
@@ -28,6 +29,7 @@ program.addCommand(createDepartmentCommand());
 program.addCommand(createWebhooksCommand());
 program.addCommand(createLocationsCommand());
 program.addCommand(createPositionsCommand());
+program.addCommand(createPlacementsCommand());
 
 program
   .command('test')
