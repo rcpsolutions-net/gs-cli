@@ -3,6 +3,7 @@
 // src/commands/auth.js
 
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 import { Command } from 'commander';
@@ -13,7 +14,7 @@ import config from '../lib/config.js';
 
 export default function createAuthCommand() {
   const auth = new Command('auth')
-    .description('Manage Bullhorn authentication (login, logout, status)');
+    .description('Manage Greenshades authentication (login, logout, status)');
 
   // Subcommand: auth login
   auth
@@ -62,7 +63,6 @@ export default function createAuthCommand() {
     .action(async() => {
       const token = config.get('GsAccessToken');    
 
-
       if (token) {
         console.log(chalk.blue('✅ Stored API token found in configuration.'));
 
@@ -70,7 +70,7 @@ export default function createAuthCommand() {
 
       } else {
         console.log(chalk.yellow('❌ No stored API token found in configuration.'));
-        console.log(`   Run ${chalk.cyan('bh auth login')} to authenticate.`);
+        console.log(`   Run ${chalk.cyan('greenshades auth login')} to authenticate.`);
       }
     });
 

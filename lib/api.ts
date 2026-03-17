@@ -13,7 +13,7 @@ if (!GsAccessToken ) {
 
   if (!isAuthCommand && !isHelpCommand) {
     console.error(chalk.red('Authentication error: You are not logged in.'));
-    console.error(`Please run ${chalk.cyan('bh auth login')} to start a session.`);
+    console.error(`Please run ${chalk.cyan('greenshades auth login')} to start a session.`);
     process.exit(1);
   }
 }
