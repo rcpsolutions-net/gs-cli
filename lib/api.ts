@@ -26,7 +26,7 @@ const apiClient = axios.create({
             },
             headers: {
                 'Authorization': `Bearer ${GsAccessToken}`,
-                'Accept': 'application/json'
+                'accept': '*/*'
             }
         });
 
@@ -44,12 +44,14 @@ async function handleTokenRefresh() {
 
     if( newToken !== GsAccessToken ) {
       GsAccessToken = newToken; // Update the in-memory token variable
-      console.log(chalk.green(`Token updated in memory: ${chalk.blue(GsAccessToken)}`));
+      console.log(chalk.green(`- Token updated in memory: ${chalk.blue(GsAccessToken)}`));
+    }
+    else {
+      console.warn(chalk.yellow('⚠️  Warning: Token refresh completed but the token value did not change. This may indicate an issue with the token refresh process.'));
     }
 
-    console.log(chalk.green('✅ Token refreshed successfully.'));
-
     return newToken;
+
   } catch (error:any) {
 
     console.error(chalk.red('❌ Failed to refresh token:', error?.message));
@@ -78,7 +80,6 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // For all other errors, just reject the promise
     return Promise.reject(error);
   }
 );
