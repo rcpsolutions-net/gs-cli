@@ -33,7 +33,7 @@ GREENSHADES_WORKSPACE_ID=your_workspace_id
 GREENSHADES_API_SCOPE=GO.Api.COR.read GO.Api.PAY.read GO.Api.PAY.Setup.read GO.Api.PAY.PayRuns.read GO.Api.PAY.Reporting.read
 ```
 
-2. Authenticate:
+1. Authenticate:
 
 ```bash
 greenshades auth login
@@ -41,7 +41,7 @@ greenshades auth login
 
 You'll be prompted for your Client ID, Client Secret, and Workspace ID (defaults to `.env` values). On success, the token and workspace ID are stored locally for subsequent commands.
 
-3. Verify setup:
+1. Verify setup:
 
 ```bash
 greenshades test
@@ -126,17 +126,19 @@ greenshades webhooks list                                          # List all we
 greenshades webhooks details <webhookId>                           # Get a webhook subscription by ID
 greenshades webhooks create <event-name> <callback-url> [hmac-key] # Create a new webhook subscription
 greenshades webhooks delete <id>                                   # Delete a webhook subscription
+greenshades webhooks subscribe <id> <event-name>                   # Add an event to an existing subscription
+greenshades webhooks unsubscribe <id> <event-name>                 # Remove an event from an existing subscription
 ```
 
 ## Configuration
 
 After login, credentials are persisted locally via [`conf`](https://github.com/sindresorhus/conf):
 
-| Platform | Path |
-|----------|------|
-| Linux    | `~/.config/gs-cli/config.json` |
-| macOS    | `~/Library/Preferences/gs-cli/config.json` |
-| Windows  | `%APPDATA%\gs-cli\config.json` |
+| Platform | Path                                        |
+|----------|---------------------------------------------|
+| Linux    | `~/.config/gs-cli/config.json`              |
+| macOS    | `~/Library/Preferences/gs-cli/config.json`  |
+| Windows  | `%APPDATA%\gs-cli\config.json`              |
 
 The stored config contains the access token and workspace ID. Treat this file as sensitive.
 
