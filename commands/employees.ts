@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 
-function createEmployeesCommand() {
+function createEmployeeCommands() {
   const employees = new Command('employee')
     .description('View employees in the Greenshades API (list, pull, dependents, contacts, customFields)');
 
@@ -112,4 +112,4 @@ function createEmployeesCommand() {
   return employees;
 }
 
-export default createEmployeesCommand;
+export default createEmployeeCommands;

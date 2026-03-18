@@ -3,14 +3,14 @@ import chalk from 'chalk';
 import pkg from './package.json' with { type: 'json' };
 
 import createAuthCommand from './commands/auth.js';
-import createEmployeesCommand from './commands/employees.ts';
-import createPayrecordCommand from './commands/payrecord.ts';
-import createPayrollCommand from './commands/employee-settings.ts';
-import createDepartmentCommand from './commands/department.ts';
-import createWebhooksCommand from './commands/webhooks.ts';
-import createLocationsCommand from './commands/locations.ts';
-import createPositionsCommand from './commands/positions.ts';
-import createPlacementsCommand from './commands/placements.ts';
+import createEmployeeCommands from './commands/employees.ts';
+import createPayrecordCommands from './commands/payrecord.ts';
+import createPayrollCommands from './commands/employee-settings.ts';
+import createDepartmentCommands from './commands/department.ts';
+import createWebhookCommands from './commands/webhooks.ts';
+import createLocationCommands from './commands/locations.ts';
+import createPositionCommands from './commands/positions.ts';
+import createPlacementCommands from './commands/placements.ts';
 
 const program = new Command();
 
@@ -22,14 +22,14 @@ program
              chalk.blueBright('" to authenticate before using other commands.\n')));
 
 program.addCommand(createAuthCommand()); 
-program.addCommand(createEmployeesCommand());
-program.addCommand(createPayrecordCommand());
-program.addCommand(createPayrollCommand());
-program.addCommand(createDepartmentCommand());
-program.addCommand(createWebhooksCommand());
-program.addCommand(createLocationsCommand());
-program.addCommand(createPositionsCommand());
-program.addCommand(createPlacementsCommand());
+program.addCommand(createEmployeeCommands());
+program.addCommand(createPayrecordCommands());
+program.addCommand(createPayrollCommands());
+program.addCommand(createDepartmentCommands());
+program.addCommand(createWebhookCommands());
+program.addCommand(createLocationCommands());
+program.addCommand(createPositionCommands());
+program.addCommand(createPlacementCommands());
 
 program
   .command('test')

@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 
-function createLocationsCommand() {
+function createLocationCommands() {
   const locations = new Command('locations')
     .description('View client work locations in the Greenshades API (list, details)');
 
@@ -48,4 +48,4 @@ function createLocationsCommand() {
     return locations;
 }
 
-export default createLocationsCommand;
+export default createLocationCommands;

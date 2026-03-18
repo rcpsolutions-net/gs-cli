@@ -1,6 +1,5 @@
 // Authentication Commands for Greenshades API
 // lham@netplug
-// src/commands/auth.js
 
 import dotenv from 'dotenv';
 
@@ -12,13 +11,11 @@ import chalk from 'chalk';
 import { login, logout, getTokenInfo } from '../lib/auth.js';
 import config from '../lib/config.js';
 
-export default function createAuthCommand() {
+export default function createAuthCommands() {
   const auth = new Command('auth')
     .description('Manage Greenshades authentication (login, logout, status)');
 
-  // Subcommand: auth login
-  auth
-    .command('login')
+  auth.command('login')
     .description('Authenticate with the Greenshades API and save the session.')
     .action(async () => {
       const questions = [      
@@ -48,17 +45,13 @@ export default function createAuthCommand() {
       await login(credentials);
     });
 
-  // Subcommand: auth logout
-  auth
-    .command('logout')
+  auth.command('logout')
     .description('Clear stored credentials and end the current session.')
     .action(() => {
         logout();
     });
 
-  // Subcommand: auth status
-  auth
-    .command('status')
+  auth.command('status')
     .description('Check the current authentication status.')
     .action(async() => {
       const token = config.get('GsAccessToken');    

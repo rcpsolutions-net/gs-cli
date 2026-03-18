@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 
-function createPositionsCommand() {
+function createPositionCommands() {
   const positions = new Command('positions')
     .description('View positions in the Greenshades API (list, details, worker-compensation-codes)');
 
@@ -65,4 +65,4 @@ function createPositionsCommand() {
     return positions;
 }
 
-export default createPositionsCommand;
+export default createPositionCommands;

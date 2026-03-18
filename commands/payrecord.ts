@@ -4,7 +4,7 @@ import apiClient from '../lib/api.ts';
 import { format, subDays, endOfDay, startOfDay } from 'date-fns';
 import config from '../lib/config.js';
 
-function createPayrecordCommand() {
+function createPayrecordCommands() {
   const payrecord = new Command('paystubs')
     .description('View paystub records in the Greenshades API (list, details, employee, payrun)');
 
@@ -105,4 +105,4 @@ function createPayrecordCommand() {
       return payrecord;
 }
 
-export default createPayrecordCommand;
+export default createPayrecordCommands;

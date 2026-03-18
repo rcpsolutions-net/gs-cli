@@ -18,21 +18,8 @@ const validEventNames = [
     "employee.earningCode.deleted"
 ];
 
-async function getWebhookById(webhookId: string) {
-  try {
-    console.log(chalk.redBright('Retrieving existing webhook subscription details to get current subscribed events...'));
 
-    const resp = await apiClient.get(`/webhooks/subscriptions/${webhookId}`);
-
-    return resp.data;
-  } catch (error: any) {
-    console.error(chalk.red(`Error fetching webhook subscription ${webhookId}:`, error.message));
-
-    process.exit(1);
-  }
-}
-
-function createWebhooksCommand() {
+function createWebhookCommands() {
   const webhooks = new Command('webhooks')
     .description('Manage webhooks in the Greenshades API (list, details, create, delete, subscribe, unsubscribe)');
 
@@ -119,37 +106,26 @@ function createWebhooksCommand() {
     .description('Add an event subscription to an existing webhook subscription by their Greenshades webhookId and event name')
     .action(async (id, eventName) => {
       try {
-        if( !validEventNames.includes(eventName) ) {          
-          console.log(chalk.yellow(`⚠️ Event name ${eventName} is not in the list of valid event names. Please provide a valid event name and try again.`) + ' ' +
-            chalk.blue(`Valid event names are: ${validEventNames.join(', ')}`));
 
-          return;
+        if( !validEventNames.includes(eventName) ) {          
+          return console.log(chalk.yellow(`⚠️ Event name ${eventName} is not in the list of valid event names. Please provide a valid event name and try again.`) + ' ' + chalk.blue(`Valid event names are: ${validEventNames.join(', ')}`));          
         }
  
         const wh = await getWebhookById(id);
-
-        if( !wh ) {
-          console.log(chalk.yellow(`⚠️ No existing webhook subscription found with Id ${id}. Cannot add event subscription. Please check the Id and try again.`));
-          return;
-        }   
+        if( !wh ) 
+          return console.log(chalk.yellow(`⚠️ No existing webhook subscription found with Id ${id}. Cannot add event subscription. Please check the Id and try again.`));
         
         const events = wh.subscribedEvents || [];
 
         console.log(chalk.redBright(`Current subscribed events for webhook subscription ${id}: ${events.join(', ')}`));
 
         if( events.includes(eventName) ) {
-          console.log(chalk.yellow(`⚠️ Webhook subscription with Id ${id} is ALREADY subscribed to event ${eventName}. No action taken.`));
-          return;
+          return console.log(chalk.yellow(`⚠️ Webhook subscription with Id ${id} is ALREADY subscribed to event ${eventName}. No action taken.`));          
         }
         else {
           console.log(chalk.blue(`Webhook subscription ${id} is not currently subscribed to event ${eventName}. Proceeding to add subscription...`));
 
-          const resp = await apiClient.put(`/webhooks/subscriptions/${id}`, {
-            id: id,
-            url: wh.url,
-            hmacKey: wh.hmacKey,
-            subscribedEvents: [...events, eventName]
-          });
+          const resp = await putWebhookById(id, wh.url, wh.hmacKey, [...events, eventName]);
 
           console.log(chalk.green(`✅ Successfully added event subscription for event ${eventName} to webhook subscription with Id ${id}.`));
         }
@@ -163,35 +139,26 @@ function createWebhooksCommand() {
     webhooks.command('unsubscribe <id> <eventName>')
     .description('Remove an event subscription from an existing webhook subscription by their Greenshades webhookId and event name')
     .action(async (id, eventName) => {
-      try {
+      try 
+      {
         if( !validEventNames.includes(eventName) ) {          
-          console.log(chalk.yellow(`⚠️ Event name ${eventName} is not in the list of valid event names. Please provide a valid event name and try again.`) + ' ' +
-            chalk.blue(`Valid event names are: ${validEventNames.join(', ')}`));
-          return;
+          return console.log(chalk.yellow(`⚠️ Event name ${eventName} is not in the list of valid event names. Please provide a valid event name and try again.`) + ' ' + chalk.blue(`Valid event names are: ${validEventNames.join(', ')}`));        
         }
  
         const wh = await getWebhookById(id);
-
-        if( !wh ) {
-          console.log(chalk.yellow(`⚠️ No existing webhook subscription found with Id ${id}. Cannot remove event subscription. Please check the Id and try again.`));
-          return;
-        }   
+        if( !wh ) 
+          return console.log(chalk.yellow(`⚠️ No existing webhook subscription found with Id ${id}. Cannot remove event subscription. Please check the Id and try again.`));                
         
         const events = wh.subscribedEvents || [];
         console.log(chalk.redBright(`Current subscribed events for webhook subscription ${id}: ${events.join(', ')}`));
 
         if( !events.includes(eventName) ) {
-          console.log(chalk.yellow(`⚠️ Webhook subscription with Id ${id} is NOT subscribed to event ${eventName}. No action taken.`));
-          return;
+          return console.log(chalk.yellow(`⚠️ Webhook subscription with Id ${id} is NOT subscribed to event ${eventName}. No action taken.`));
         }
         else {
           console.log(chalk.blue(`Webhook subscription ${id} is currently subscribed to event ${eventName}. Proceeding to remove subscription...`));
-          const resp = await apiClient.put(`/webhooks/subscriptions/${id}`, {
-            id: id,
-            url: wh.url,
-            hmacKey: wh.hmacKey,
-            subscribedEvents: events.filter((e:any) => e !== eventName)
-          });       
+
+          await putWebhookById(id, wh.url, wh.hmacKey, events.filter((e:any) => e !== eventName));
 
           console.log(chalk.green(`✅ Successfully removed event subscription for event ${eventName} from webhook subscription with Id ${id}.`));
         }
@@ -205,13 +172,47 @@ function createWebhooksCommand() {
     return webhooks;
 }
 
-export default createWebhooksCommand;
+// Helper functions to get existing webhook subscription details and update webhook subscription with new event subscriptions
+
+async function getWebhookById(webhookId: string) {
+  try {
+    console.log(chalk.redBright('Retrieving existing webhook subscription details to get current subscribed events...'));
+
+    const resp = await apiClient.get(`/webhooks/subscriptions/${webhookId}`);
+
+    return resp.data;
+  } catch (error: any) {
+    console.error(chalk.red(`Error fetching webhook subscription ${webhookId}:`, error.message));
+
+    process.exit(1);
+  }
+}
+
+async function putWebhookById(webhookId: string, url: string, hmacKey: string, subscribedEvents: string[]) {
+  try {
+    console.log(chalk.redBright('Updating webhook subscription with new subscribed events...'));
+
+    const resp = await apiClient.put(`/webhooks/subscriptions/${webhookId}`, {
+      id: webhookId,
+      url: url,
+      hmacKey: hmacKey,
+      subscribedEvents: subscribedEvents
+    });
+    
+    return resp;
+  } catch (error: any) {
+    console.error(chalk.red(`Error updating webhook subscription ${webhookId}:`, error.message));
+
+    process.exit(1);
+  }
+}
+
+export default createWebhookCommands;
 
 /***
+ * Example code for generating HMAC signature for incoming webhook requests (to verify authenticity of incoming webhook requests from Greenshades API):
  * 
  * 
- * 
- 
 const crypto = require('crypto');
 
 const timestamp = "{{timestamp from RequestHeaders 'X-GS-TIMESTAMP'}}";
@@ -238,4 +239,4 @@ function signKey (clientKey, msg) {
     return crypto.createHmac('sha256', key).update(msg).digest('hex');
 }
 
- */
+*****/

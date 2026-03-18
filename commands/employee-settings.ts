@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 import config from '../lib/config.js';
 
-function createEmployeeSettingsCommand() {
+function createEmployeeSettingCommands() {
   const payroll = new Command('settings')
     .description('View Employee Payroll Settings in the Greenshades API (pay-details, earn-codes, tax-details, pay-schedule, time-off, benefits, deductions)');
 
@@ -151,4 +151,4 @@ function createEmployeeSettingsCommand() {
       return payroll;
 }
 
-export default createEmployeeSettingsCommand;
+export default createEmployeeSettingCommands;

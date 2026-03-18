@@ -1,10 +1,8 @@
-// file: src/commands/employees.ts
-
 import { Command } from 'commander';
 import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 
-function createDepartmentCommand() {
+function createDepartmentCommands() {
   const department = new Command('department')
     .description('View departments in the Greenshades API (list, details)');
 
@@ -49,4 +47,4 @@ function createDepartmentCommand() {
     return department;
 }
 
-export default createDepartmentCommand;
+export default createDepartmentCommands;

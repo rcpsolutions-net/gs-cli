@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 
-function createPlacementsCommand() {
+function createPlacementCommands() {
   const placements = new Command('placements')
     .description('View placements in the Greenshades API (list, details, employee)');
 
@@ -67,4 +67,4 @@ function createPlacementsCommand() {
     return placements;
 }
 
-export default createPlacementsCommand;
+export default createPlacementCommands;
