@@ -14,6 +14,7 @@
   "author": "Lawrence Ham",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^25.5.0",
     "axios": "^1.7.2",
     "chalk": "^5.3",
     "cli-table3": "^0.6.5",

@@ -4,9 +4,10 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 
+
 function createWebhooksCommand() {
   const webhooks = new Command('webhooks')
-    .description('Manage webhooks in the Greenshades API (list, details, create)');
+    .description('Manage webhooks in the Greenshades API (list, details, create, delete, add-sub, remove-sub)');
 
   webhooks  
     .command('list')  
