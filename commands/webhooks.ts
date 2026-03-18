@@ -63,7 +63,7 @@ function createWebhooksCommand() {
 
         const response = await apiClient.get(`/webhooks/subscriptions/${webhookId}`);
 
-        console.log(JSON.stringify(response.data, null, 2));
+        console.log('WebHook Record: ', JSON.stringify(response.data, null, 2));
 
         console.log(chalk.green(`✅ Successfully retrieved webhook subscription ${webhookId}.`));
       } catch (error: any) {
@@ -105,9 +105,7 @@ function createWebhooksCommand() {
       try {
         console.log(chalk.blue(`--- Deleting webhook subscription with subscription Id: ${id}...`));
 
-        const response = await apiClient.delete(`/webhooks/subscriptions/${id}`);
-
-        console.log(JSON.stringify(response.data, null, 2));
+        await apiClient.delete(`/webhooks/subscriptions/${id}`);
 
         console.log(chalk.green(`✅ Successfully deleted webhook subscription with Id ${id}.`));
       } catch (error: any) {
