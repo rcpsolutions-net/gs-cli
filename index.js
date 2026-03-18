@@ -14,8 +14,7 @@ import createPlacementCommands from './commands/placements.ts';
 
 const program = new Command();
 
-program
-  .name('greenshades')
+program.name('greenshades')
   .version(pkg.version)
   .description(chalk.whiteBright(pkg.description + ' created by ') + chalk.cyanBright('Lawrence Ham\n\n') + 
              chalk.blueBright('Note: All commands require authentication. Please run "' + chalk.greenBright('greenshades auth login') + 
@@ -31,8 +30,7 @@ program.addCommand(createLocationCommands());
 program.addCommand(createPositionCommands());
 program.addCommand(createPlacementCommands());
 
-program
-  .command('test')
+program.command('test')
   .description('Use this command to verify that the CLI is set up correctly and can execute commands without errors.\n')
   .action(() => {
     console.log(chalk.green('✅ GreenShades CLI is set up correctly!'));

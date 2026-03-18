@@ -139,4 +139,4 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 employees.json
-hmac.ts
+hmac.*
