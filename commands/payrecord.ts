@@ -9,11 +9,14 @@ function createPayrecordCommands() {
     .description('View paystub records in the Greenshades API (list, details, employee, payrun)');
 
   payrecord.command('list')
+    .option('-o, --output <output>', 'Specify output format (json, table)', 'table')
+    .option('-s, --start-date <startDate>', 'Specify start date for paystubs (YYYY-MM-DD)')
+    .option('-e, --end-date <endDate>', 'Specify end date for paystubs (YYYY-MM-DD)')
     .description('Get all paystubs for the workspace within the last 2 days')
-    .action(async () => {
+    .action(async (options) => {
       try {
-        const startDate = startOfDay(subDays(new Date(), 2));
-        const endDate = endOfDay(new Date());
+        const startDate = options?.startDate ? startOfDay(new Date(options.startDate)) : startOfDay(subDays(new Date(), 2));
+        const endDate = options?.endDate ? endOfDay(new Date(options.endDate)) : endOfDay(new Date());
         const workspaceId = config.get('GsWorkspaceId');
 
         console.log(chalk.blue(`Fetching all paystubs for workspace ${workspaceId} from ${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}...`));        
@@ -25,7 +28,29 @@ function createPayrecordCommands() {
           }
           });
         
-        console.log(JSON.stringify(response.data, null, 2));
+        if( options?.output === 'table' ) {
+          const formattedData = response.data.map((record: any) => ({   
+            id: record.id,         
+            EmployeeId: record.employeeID,
+            RecordType: record.recordType,
+            PayRunId: record.payRunId,
+            CheckDate: record.checkDate,
+            GrossPay: record.grossWages,
+            NetPay: record.netWages,
+            TotalDeductions: record.totalDeductions,
+            TotalTax: record.totalTaxes,
+            CheckNumber: record.checkNumber,
+            TaxingEntityTotal: record.taxes.length,
+          }));
+
+          console.table(formattedData);
+          
+          return console.log(chalk.green('✅ Successfully retrieved paystubs in table format.'));
+        }
+        else {
+          console.log(chalk.blueBright('Outputting paystubs in JSON format:\n'));
+          console.log(JSON.stringify(response.data, null, 2));
+        }
 
         console.log(chalk.green('✅ Successfully retrieved paystubs.'));
 
@@ -38,13 +63,28 @@ function createPayrecordCommands() {
 
   payrecord.command('details <pay-record-id>')
     .description('Get a single paystub by its payRecordId')
-    .action(async (payRecordId) => {
+    .option('-o, --output <output>', 'Specify output format (json, table)', 'table')
+    .option('-s, --start-date <startDate>', 'Specify start date for paystubs (YYYY-MM-DD)')
+    .option('-e, --end-date <endDate>', 'Specify end date for paystubs (YYYY-MM-DD)')
+    .action(async (payRecordId, options) => {
       try {
         console.log(chalk.blue(`Fetching paystub with Id: ${payRecordId}...`));
 
         const response = await apiClient.get(`/payroll/pay-records/${payRecordId}`);
 
-        console.log(JSON.stringify(response.data, null, 2));
+        if( options?.output === 'table' ) {
+          if( typeof response.data === 'object' && response.data !== null ) {
+            const formattedData = Object.entries(response.data).map(([key, value]) => ({
+              Field: key,
+              Value: typeof value === 'object' && value !== null ? JSON.stringify(value) : value,
+            }));
+            console.table(formattedData);
+          }
+        }
+        else {
+          console.log(chalk.blueBright('Outputting paystub in JSON format:\n'));
+          console.log(JSON.stringify(response.data, null, 2));
+        }
 
         console.log(chalk.green(`✅ Successfully retrieved paystub ${payRecordId}.`));
       } catch (error: any) {
@@ -54,13 +94,15 @@ function createPayrecordCommands() {
       }
     });
 
-
     payrecord.command('employee <employeeId>')
+      .option('-o, --output <output>', 'Specify output format (json, table)', 'table')
+      .option('-s, --start-date <startDate>', 'Specify start date for paystubs (YYYY-MM-DD)')
+      .option('-e, --end-date <endDate>', 'Specify end date for paystubs (YYYY-MM-DD)')
       .description('Get all paystubs for a specific employee')
-      .action(async (employeeId) => {
+      .action(async (employeeId, options) => {
         try {
-          const startDate = startOfDay(subDays(new Date(), 2));
-          const endDate = endOfDay(new Date());
+          const startDate = options?.startDate ? startOfDay(new Date(options.startDate)) : startOfDay(subDays(new Date(), 2));
+          const endDate = options?.endDate ? endOfDay(new Date(options.endDate)) : endOfDay(new Date());
           const workspaceId = config.get('GsWorkspaceId');
 
           console.log(chalk.blue(`Fetching paystubs for employee with Id: ${employeeId} in workspace ${workspaceId} from ${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}...`));
@@ -72,7 +114,15 @@ function createPayrecordCommands() {
             }
           });
 
-          console.log(JSON.stringify(response.data, null, 2));
+          if( options?.output === 'table' ) {
+            console.table(response.data);
+
+            return console.log(chalk.green('✅ Successfully retrieved pay-records in table format.'));
+          }
+          else {
+            console.log(chalk.blueBright('Outputting pay-records in JSON format:\n'));
+            console.log(JSON.stringify(response.data, null, 2));
+          }
 
           console.log(chalk.green(`✅ Successfully retrieved pay-records for employee ${employeeId}.`));
         } catch (error: any) {
@@ -84,7 +134,10 @@ function createPayrecordCommands() {
 
       payrecord.command('payrun <payRunId>')
       .description('Get all pay-records for a specific pay-run id')
-      .action(async (payRunId) => {
+      .option('-o, --output <output>', 'Specify output format (json, table)', 'table')
+      .option('-s, --start-date <startDate>', 'Specify start date for paystubs (YYYY-MM-DD)')
+      .option('-e, --end-date <endDate>', 'Specify end date for paystubs (YYYY-MM-DD)')
+      .action(async (payRunId, options) => {
         try {        
           const workspaceId = config.get('GsWorkspaceId');
 
@@ -92,7 +145,14 @@ function createPayrecordCommands() {
 
           const response = await apiClient.get(`/payroll/pay-runs/${payRunId}/pay-records`);
 
-          console.log(JSON.stringify(response.data, null, 2));
+          if( options?.output === 'table' ) {
+            console.table(response.data);
+            return console.log(chalk.green('✅ Successfully retrieved pay-records in table format.'));
+          }
+          else {
+            console.log(chalk.blueBright('Outputting pay-records in JSON format:\n'));
+            console.log(JSON.stringify(response.data, null, 2));
+          }
 
           console.log(chalk.green(`✅ Successfully retrieved pay-records for pay-run ${payRunId}.`));
         } catch (error: any) {
@@ -100,7 +160,7 @@ function createPayrecordCommands() {
 
           process.exit(1);
         }
-      });
+      });         
 
       return payrecord;
 }
