@@ -136,6 +136,22 @@ function createWebhookCommands() {
       }
     });
 
+    webhooks.command('tap <id> <eventName>')
+    .description('Send a test webhook event to the callback URL for a given webhook subscription Id and event name')
+    .action(async (id, eventName) => {
+      try {
+        console.log(chalk.blue(`--- Sending test webhook event ${eventName} for webhook subscription with Id ${id}...`));
+
+        await apiClient.post(`/webhooks/subscriptions/${id}/test?eventName=${eventName}`);
+
+        console.log(chalk.green(`✅ Successfully sent test webhook event ${eventName} for webhook subscription with Id ${id}.`));
+      } catch (error: any) {
+        console.error(chalk.red(`Error sending test webhook event ${eventName} for webhook subscription with Id ${id}:`, error.message));
+
+        process.exit(1);
+      }
+    });
+
     webhooks.command('unsubscribe <id> <eventName>')
     .description('Remove an event subscription from an existing webhook subscription by their Greenshades webhookId and event name')
     .action(async (id, eventName) => {
