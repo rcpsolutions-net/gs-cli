@@ -10,6 +10,7 @@ const validEventNames = [
     "payRun.payRecord.voided",
     "payRun.payRecords.completed",
     "paySchedule.updated",
+    "employee.added",
     "employee.updated",
     "employee.directDeposit.updated",
     "employee.paySchedule.updated",
