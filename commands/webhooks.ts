@@ -142,7 +142,7 @@ function createWebhookCommands() {
       try {
         console.log(chalk.blue(`--- Sending test webhook event ${eventName} for webhook subscription with Id ${id}...`));
 
-        await apiClient.post(`/webhooks/subscriptions/${id}/test?eventName=${eventName}`);
+        await apiClient.post(`/webhooks/subscriptions/${id}/test/${eventName}`);
 
         console.log(chalk.green(`✅ Successfully sent test webhook event ${eventName} for webhook subscription with Id ${id}.`));
       } catch (error: any) {
