@@ -139,4 +139,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 employees.json
+midwayPaystubs.json
 hmac.*
+partners_employees.json

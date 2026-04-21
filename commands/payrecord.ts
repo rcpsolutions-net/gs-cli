@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
-import { format, subDays, endOfDay, startOfDay } from 'date-fns';
+import { format, subDays, addDays, endOfDay, startOfDay } from 'date-fns';
 import config from '../lib/config.js';
 
 function createPayrecordCommands() {
@@ -12,11 +12,11 @@ function createPayrecordCommands() {
     .option('-o, --output <output>', 'Specify output format (json, table)', 'table')
     .option('-s, --start-date <startDate>', 'Specify start date for paystubs (YYYY-MM-DD)')
     .option('-e, --end-date <endDate>', 'Specify end date for paystubs (YYYY-MM-DD)')
-    .description('Get all paystubs for the workspace within the last 2 days')
+    .description('Get all paystubs for the workspace within startDate and endDate, defaults to the last 1 day')
     .action(async (options) => {
       try {
-        const startDate = options?.startDate ? startOfDay(new Date(options.startDate)) : startOfDay(subDays(new Date(), 2));
-        const endDate = options?.endDate ? endOfDay(new Date(options.endDate)) : endOfDay(new Date());
+        const startDate = options?.startDate ? addDays(startOfDay(new Date(options.startDate)), 1) : startOfDay(subDays(new Date(), 1));
+        const endDate = options?.endDate ? addDays(endOfDay(new Date(options.endDate)), 1) : endOfDay(new Date());
         const workspaceId = config.get('GsWorkspaceId');
 
         console.log(chalk.blue(`Fetching all paystubs for workspace ${workspaceId} from ${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}...`));        
