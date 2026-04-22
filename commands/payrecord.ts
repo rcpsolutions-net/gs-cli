@@ -21,7 +21,8 @@ function createPayrecordCommands() {
         const endDate = options?.endDate ? addDays(endOfDay(new Date(options.endDate)), 1) : endOfDay(new Date());
         const workspaceId = config.get('GsWorkspaceId');
 
-        const pageSize = 10;
+        const pageSize = 100;
+
         let currentPage = 1;
         let lastPage = false;
         let allRecords: any[] = [];
@@ -50,14 +51,15 @@ function createPayrecordCommands() {
                 pageSize,
                 startDate: format(startDate, 'yyyy-MM-dd'),
                 endDate: format(endDate, 'yyyy-MM-dd'),
-                after: GsCursor, // Use cursor for pagination
+                after: GsCursor,
               }
             });
 
             allRecords = allRecords.concat(pageResponse.data);
 
             GsCursor = pageResponse.headers['x-gs-cursor'] || pageResponse.headers['X-GS-CURSOR']; // Handle case-insensitive header            
-            console.log('gs-cursor from response header:', GsCursor);
+
+            console.log('gs-cursor from response header:', GsCursor ?? '(none)');
 
             if (!GsCursor) {
               lastPage = true;
@@ -65,9 +67,7 @@ function createPayrecordCommands() {
               currentPage++;
             }
         }
-
-        
-        
+                
         if( options?.output === 'table' ) {
           const formattedData = allRecords.map((record: any) => ({   
             id: record.id,         
