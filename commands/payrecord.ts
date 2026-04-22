@@ -23,7 +23,7 @@ function createPayrecordCommands() {
         const endDate = options?.endDate ? addDays(endOfDay(new Date(options.endDate)), 1) : endOfDay(new Date());
         const workspaceId = config.get('GsWorkspaceId');
 
-        const pageSize = 1000;
+        const pageSize = 500;
 
         let currentPage = 1;
         let lastPage = false;
@@ -36,20 +36,21 @@ function createPayrecordCommands() {
             pageSize,
             startDate: format(startDate, 'yyyy-MM-dd'),
             endDate: format(endDate, 'yyyy-MM-dd'),
-            after: null, 
           }
-          });
+          }).catch((error: any) => {
+            console.error(chalk.red('Error fetching paystubs:', error.message));
+            process.exit(1);
+           });
 
-          let GsCursor = response.headers['x-gs-cursor'] || response.headers['X-GS-CURSOR']; 
-          console.log('(first) X-GS-CURSOR from response header:', GsCursor || '(none)');
+          let GsCursor = response.headers['x-gs-cursor'] || response.headers['X-GS-CURSOR'];              
 
-          let newRecords = response.data.filter((record: any) => {
-              const CheckNumber = record.checkNumber;
-              const isDuplicate = allRecords.some((existingRecord) => existingRecord.checkNumber === CheckNumber);
-              return !isDuplicate;
-          });
+          allRecords = [...response.data]; 
 
-          allRecords = allRecords.concat(newRecords); // Add first page of results, ensuring no duplicates
+          console.log('(first) Received ' + response.data.length + ' records. ' + allRecords.length + ' records total. ' + 'X-GS-CURSOR response:', GsCursor ?? '(none)');
+
+          if( GsCursor ) currentPage++;
+          else lastPage = true;
+
 
           while (!lastPage) {
             console.log(chalk.blue(`Fetching page ${currentPage} of paystubs...`));
@@ -61,21 +62,22 @@ function createPayrecordCommands() {
                 endDate: format(endDate, 'yyyy-MM-dd'),
                 after: GsCursor,
               }
-            });
+            }).catch((error: any) => {
+              console.error(chalk.red(`Error fetching page ${currentPage} of paystubs:`, error.message));
+              process.exit(1);
+             });
 
-            let newRecords = pageResponse.data.filter((record: any) => {
-              const CheckNumber = record.checkNumber;
-              const isDuplicate = allRecords.some((existingRecord) => existingRecord.checkNumber === CheckNumber);
-              return !isDuplicate;
+            let newRecords = pageResponse.data.filter((record: any) => {              
+              return !allRecords.some((existingRecord) => existingRecord.checkNumber === record.checkNumber);              
             });
 
             allRecords = allRecords.concat(newRecords);
 
-            GsCursor = pageResponse.headers['x-gs-cursor'] || pageResponse.headers['X-GS-CURSOR']; // Handle case-insensitive header            
+            GsCursor = pageResponse.headers['x-gs-cursor'] || pageResponse.headers['X-GS-CURSOR'];           
 
-            console.log('Received ' + pageResponse.data.length + ' records. ' + allRecords.length + ' records total. ' + 'X-GS-CURSOR response:', GsCursor ?? '(none)');
+            console.log(currentPage + ': Received ' + pageResponse.data.length + ' records. ' + allRecords.length + ' records total. ' + 'X-GS-CURSOR response:', GsCursor ?? '(none)');
 
-             writeFileSync(`paystubs-${format(startDate, 'yyyy-MM-dd')}-${format(endDate, 'yyyy-MM-dd')}.json`, JSON.stringify(allRecords, null, 2));
+            writeFileSync(`paystubs-${format(startDate, 'yyyy-MM-dd')}-${format(endDate, 'yyyy-MM-dd')}.json`, JSON.stringify(allRecords, null, 2));
 
             if (!GsCursor) {
               lastPage = true;
