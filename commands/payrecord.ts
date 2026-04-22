@@ -3,13 +3,15 @@ import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 import { format, subDays, addDays, endOfDay, startOfDay } from 'date-fns';
 import config from '../lib/config.js';
+import { writeFile, writeFileSync } from 'node:fs';
 
 function createPayrecordCommands() {
   const payrecord = new Command('paystubs')
+    .option('-o, --output <output>', 'Specify output format (json, table)', 'json')
     .description('View paystub records in the Greenshades API (list, details, employee, payrun)');
 
   payrecord.command('list')
-    .option('-o, --output <output>', 'Specify output format (json, table)', 'table')
+    .option('-o, --output <output>', 'Specify output format (json, table)', 'json')
     .option('-s, --start-date <startDate>', 'Specify start date for paystubs (YYYY-MM-DD)')
     .option('-e, --end-date <endDate>', 'Specify end date for paystubs (YYYY-MM-DD)')
     .description('Get all paystubs for the workspace within startDate and endDate, defaults to the last 1 day')
@@ -19,17 +21,55 @@ function createPayrecordCommands() {
         const endDate = options?.endDate ? addDays(endOfDay(new Date(options.endDate)), 1) : endOfDay(new Date());
         const workspaceId = config.get('GsWorkspaceId');
 
+        const pageSize = 10;
+        let currentPage = 1;
+        let lastPage = false;
+        let allRecords: any[] = [];
+
         console.log(chalk.blue(`Fetching all paystubs for workspace ${workspaceId} from ${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}...`));        
 
         const response = await apiClient.get('/pay-records',  {
           params: {
+            pageSize,
             startDate: format(startDate, 'yyyy-MM-dd'),
-            endDate: format(endDate, 'yyyy-MM-dd'),           
+            endDate: format(endDate, 'yyyy-MM-dd'),
+            after: null, 
           }
           });
+
+          let GsCursor = response.headers['x-gs-cursor'] || response.headers['X-GS-CURSOR']; // Handle case-insensitive header
+          console.log('gs-cursor from response header:', GsCursor);
+
+          allRecords = allRecords.concat(response.data);
+
+          while (!lastPage) {
+            console.log(chalk.blue(`Fetching page ${currentPage} of paystubs...`));
+
+            const pageResponse = await apiClient.get('/pay-records',  {
+              params: {
+                pageSize,
+                startDate: format(startDate, 'yyyy-MM-dd'),
+                endDate: format(endDate, 'yyyy-MM-dd'),
+                after: GsCursor, // Use cursor for pagination
+              }
+            });
+
+            allRecords = allRecords.concat(pageResponse.data);
+
+            GsCursor = pageResponse.headers['x-gs-cursor'] || pageResponse.headers['X-GS-CURSOR']; // Handle case-insensitive header            
+            console.log('gs-cursor from response header:', GsCursor);
+
+            if (!GsCursor) {
+              lastPage = true;
+            } else {
+              currentPage++;
+            }
+        }
+
+        
         
         if( options?.output === 'table' ) {
-          const formattedData = response.data.map((record: any) => ({   
+          const formattedData = allRecords.map((record: any) => ({   
             id: record.id,         
             EmployeeId: record.employeeID,
             RecordType: record.recordType,
@@ -47,12 +87,11 @@ function createPayrecordCommands() {
           
           return console.log(chalk.green('✅ Successfully retrieved paystubs in table format.'));
         }
-        else {
-          console.log(chalk.blueBright('Outputting paystubs in JSON format:\n'));
-          console.log(JSON.stringify(response.data, null, 2));
-        }
+        else {        
+          writeFileSync(`paystubs-${format(startDate, 'yyyy-MM-dd')}-${format(endDate, 'yyyy-MM-dd')}.json`, JSON.stringify(allRecords, null, 2));
 
-        console.log(chalk.green('✅ Successfully retrieved paystubs.'));
+          console.log(chalk.green(`✅ Successfully wrote paystubs to file: paystubs-${format(startDate, 'yyyy-MM-dd')}-${format(endDate, 'yyyy-MM-dd')}.json`));             
+        }        
 
       } catch (error: any) {
         console.error(chalk.red('Error fetching paystubs:', error.message));
