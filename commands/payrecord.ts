@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import apiClient from '../lib/api.ts';
 import { format, subDays, addDays, endOfDay, startOfDay } from 'date-fns';
 import config from '../lib/config.js';
-import { writeFile, writeFileSync } from 'node:fs';
+import { writeFileSync } from 'node:fs';
 
 function createPayrecordCommands() {
   const payrecord = new Command('paystubs')   
@@ -61,7 +61,7 @@ function createPayrecordCommands() {
 
             GsCursor = pageResponse.headers['x-gs-cursor'] || pageResponse.headers['X-GS-CURSOR']; // Handle case-insensitive header            
 
-            console.log('X-GS-CURSOR from response header:', GsCursor ?? '(none)');
+            console.log('Received ' + pageResponse.data.length + ' records. X-GS-CURSOR from response header:', GsCursor ?? '(none)');
 
             if (!GsCursor) {
               lastPage = true;
