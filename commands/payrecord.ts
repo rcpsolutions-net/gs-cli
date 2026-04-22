@@ -6,8 +6,7 @@ import config from '../lib/config.js';
 import { writeFile, writeFileSync } from 'node:fs';
 
 function createPayrecordCommands() {
-  const payrecord = new Command('paystubs')
-    .option('-o, --output <output>', 'Specify output format (json, table)', 'json')
+  const payrecord = new Command('paystubs')   
     .description('View paystub records in the Greenshades API (list, details, employee, payrun)');
 
   payrecord.command('list')
@@ -16,6 +15,9 @@ function createPayrecordCommands() {
     .option('-e, --end-date <endDate>', 'Specify end date for paystubs (YYYY-MM-DD)')
     .description('Get all paystubs for the workspace within startDate and endDate, defaults to the last 1 day')
     .action(async (options) => {
+
+      console.log(chalk.blue('Fetching paystubs with options:', Object.keys(options)));  
+
       try {
         const startDate = options?.startDate ? addDays(startOfDay(new Date(options.startDate)), 1) : startOfDay(subDays(new Date(), 1));
         const endDate = options?.endDate ? addDays(endOfDay(new Date(options.endDate)), 1) : endOfDay(new Date());
@@ -38,8 +40,8 @@ function createPayrecordCommands() {
           }
           });
 
-          let GsCursor = response.headers['x-gs-cursor'] || response.headers['X-GS-CURSOR']; // Handle case-insensitive header
-          console.log('gs-cursor from response header:', GsCursor);
+          let GsCursor = response.headers['x-gs-cursor'] || response.headers['X-GS-CURSOR']; 
+          console.log('(first) X-GS-CURSOR from response header:', GsCursor || '(none)');
 
           allRecords = allRecords.concat(response.data);
 
@@ -59,7 +61,7 @@ function createPayrecordCommands() {
 
             GsCursor = pageResponse.headers['x-gs-cursor'] || pageResponse.headers['X-GS-CURSOR']; // Handle case-insensitive header            
 
-            console.log('gs-cursor from response header:', GsCursor ?? '(none)');
+            console.log('X-GS-CURSOR from response header:', GsCursor ?? '(none)');
 
             if (!GsCursor) {
               lastPage = true;
