@@ -84,7 +84,7 @@ function createPayrecordCommands() {
 
             writeFileSync(`paystubs-${format(startDate, 'yyyy-MM-dd')}-${format(endDate, 'yyyy-MM-dd')}.json`, JSON.stringify(allRecords, null, 2));
 
-            if( allRecordsCountBefore === allRecordsCountAfter ) {
+            if( allRecordsCountBefore === allRecordsCountAfter && GsCursor) {
               totalAnomalyCount++;
 
               console.log(chalk.yellow(`⚠️  Warning: No new records found on page ${currentPage}, possible duplicate page.`));
