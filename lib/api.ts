@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import chalk from 'chalk';
-import { login } from './auth.js';
+import { login, touchlessLogin } from './auth.js';
 import config from './config.js';
 
 let GsAccessToken = config.get('GsAccessToken');
@@ -38,7 +38,7 @@ async function handleTokenRefresh() {
 
     console.log(chalk.green(`Current token: ${chalk.blue(oldToken)}`));
     
-    await login({ clientId: config.get('ClientId'), clientSecret: config.get('ClientSecret') });
+    await touchlessLogin();
     
     const newToken = config.get('GsAccessToken'); // Retrieve the newly refreshed token from the config
 

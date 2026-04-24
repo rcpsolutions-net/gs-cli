@@ -22,12 +22,12 @@ function createPayrecordCommands() {
         const startDate = options?.startDate ? addDays(startOfDay(new Date(options.startDate)), 1) : startOfDay(subDays(new Date(), 1));
         const endDate = options?.endDate ? addDays(endOfDay(new Date(options.endDate)), 1) : endOfDay(new Date());
         const workspaceId = config.get('GsWorkspaceId');
-
-        const pageSize = 500;
+        const pageSize = 1000;
 
         let currentPage = 1;
         let lastPage = false;
         let allRecords: any[] = [];
+        let totalAnomalyCount = 0;
 
         console.log(chalk.blue(`Fetching all paystubs for workspace ${workspaceId} from ${format(startDate, 'yyyy-MM-dd')} to ${format(endDate, 'yyyy-MM-dd')}...`));        
 
@@ -67,17 +67,31 @@ function createPayrecordCommands() {
               process.exit(1);
              });
 
+             let allRecordsCountBefore = allRecords.length;
+
             let newRecords = pageResponse.data.filter((record: any) => {              
               return !allRecords.some((existingRecord) => existingRecord.checkNumber === record.checkNumber);              
             });
 
             allRecords = allRecords.concat(newRecords);
 
+            
             GsCursor = pageResponse.headers['x-gs-cursor'] || pageResponse.headers['X-GS-CURSOR'];           
 
             console.log(currentPage + ': Received ' + pageResponse.data.length + ' records. ' + allRecords.length + ' records total. ' + 'X-GS-CURSOR response:', GsCursor ?? '(none)');
 
+            let allRecordsCountAfter = allRecords.length;
+
             writeFileSync(`paystubs-${format(startDate, 'yyyy-MM-dd')}-${format(endDate, 'yyyy-MM-dd')}.json`, JSON.stringify(allRecords, null, 2));
+
+            if( allRecordsCountBefore === allRecordsCountAfter ) {
+              totalAnomalyCount++;
+
+              console.log(chalk.yellow(`⚠️  Warning: No new records found on page ${currentPage}, possible duplicate page.`));
+
+              if( totalAnomalyCount > 2 ) break;
+            }
+        
 
             if (!GsCursor) {
               lastPage = true;
