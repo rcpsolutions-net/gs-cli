@@ -1,6 +1,6 @@
 #!/bin/bash
 
-START_DATE="2025-09-06"
+START_DATE="2025-10-18"
 END_DATE=$(date +%Y-%m-%d)
 
 current=$START_DATE
