@@ -22,7 +22,7 @@ function createPayrecordCommands() {
         const startDate = options?.startDate ? addDays(startOfDay(new Date(options.startDate)), 1) : startOfDay(subDays(new Date(), 1));
         const endDate = options?.endDate ? addDays(endOfDay(new Date(options.endDate)), 1) : endOfDay(new Date());
         const workspaceId = config.get('GsWorkspaceId');
-        const pageSize = 1000;
+        const pageSize = 2000;
 
         let currentPage = 1;
         let lastPage = false;
