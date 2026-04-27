@@ -4,8 +4,8 @@ import apiClient from '../lib/api.ts';
 import config from '../lib/config.js';
 
 function createEmployeeSettingCommands() {
-  const payroll = new Command('settings')   
-    .description('View Employee specific settings via the Greenshades API (pay-details, earn-codes, tax-details, pay-schedule, time-off, benefits, deductions)');
+  const payroll = new Command('details')   
+    .description('View Employee specific data via the Greenshades API (pay-details, earn-codes, tax-details, pay-schedule, time-off, benefits, deductions)');
 
   payroll.command('pay-details <employeeId>')
     .description('Get details for a specific employee\'s payroll direct deposit setting.')

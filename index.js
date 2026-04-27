@@ -11,6 +11,7 @@ import createWebhookCommands from './commands/webhooks.ts';
 import createLocationCommands from './commands/locations.ts';
 import createPositionCommands from './commands/positions.ts';
 import createPlacementCommands from './commands/placements.ts';
+import createReportCommands from './commands/report.ts';
 
 const program = new Command();
 
@@ -29,6 +30,7 @@ program.addCommand(createWebhookCommands());
 program.addCommand(createLocationCommands());
 program.addCommand(createPositionCommands());
 program.addCommand(createPlacementCommands());
+program.addCommand(createReportCommands()); 
 
 program.command('test')
   .description('Use this command to verify that the CLI is set up correctly and can execute commands without errors.\n')
