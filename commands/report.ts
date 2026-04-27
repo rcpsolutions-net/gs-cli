@@ -7,7 +7,7 @@ import { writeFileSync } from 'node:fs';
 
 function createReportCommands() {
   const report = new Command('report')   
-    .description('View paystub records in the Greenshades API (list, details, employee, payrun)');
+    .description('View report results in the Greenshades API');
 
   report.command('timeoff-balances')
     .option('-o, --output <output>', 'Specify output format (json, table)', 'json')
