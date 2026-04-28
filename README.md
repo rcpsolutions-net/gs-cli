@@ -119,6 +119,35 @@ greenshades placements employee <employeeId>    # Get placements for an employee
 greenshades placements details <placementId>    # Get a single placement
 ```
 
+### Employee Classes
+
+```bash
+greenshades classes list                        # Get all employee classes
+greenshades classes details <class-code>        # Get a single employee class
+```
+
+### Custom Fields
+
+```bash
+greenshades custom list                         # Get all custom fields
+greenshades custom details <field-id>           # Get a single custom field
+greenshades custom employee <employee-id>       # Get all custom fields for a specific employee
+```
+
+### Payruns
+
+```bash
+greenshades payruns list                        # Get all payruns for the workspace
+greenshades payruns info <payrun-id>            # Get earning codes for a specific payrun
+```
+
+### Reports
+
+```bash
+greenshades report timeoff-balances             # Get all time-off balances for the workspace (exports to JSON)
+greenshades report timeoff-balances -o table    # View time-off balances output format as a table
+```
+
 ### Webhooks
 
 ```bash
