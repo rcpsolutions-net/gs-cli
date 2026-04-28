@@ -13,6 +13,8 @@ import createPositionCommands from './commands/positions.ts';
 import createPlacementCommands from './commands/placements.ts';
 import createReportCommands from './commands/report.ts';
 import createPayrunCommands from './commands/payrun.ts';
+import createClassCommands from './commands/classes.ts';
+import createCustomFieldCommands from './commands/custom.ts';
 
 const program = new Command();
 
@@ -33,6 +35,9 @@ program.addCommand(createPositionCommands());
 program.addCommand(createPlacementCommands());
 program.addCommand(createReportCommands()); 
 program.addCommand(createPayrunCommands());
+program.addCommand(createClassCommands());
+program.addCommand(createCustomFieldCommands());
+
 
 program.command('test')
   .description('Use this command to verify that the CLI is set up correctly and can execute commands without errors.\n')
