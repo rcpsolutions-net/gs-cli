@@ -146,6 +146,15 @@ greenshades payruns info <payrun-id>            # Get earning codes for a specif
 ```bash
 greenshades report timeoff-balances             # Get all time-off balances for the workspace (exports to JSON)
 greenshades report timeoff-balances -o table    # View time-off balances output format as a table
+greenshades report benefits-deductions          # Get benefits and deductions report
+```
+
+### Logs
+
+```bash
+greenshades logs list                           # Get all request logs (defaults to the last 24 hours)
+greenshades logs list -s <date> -e <date>       # Get request logs for a specific date range (YYYY-MM-DD)
+greenshades logs details <request-id>           # Get a single request log by its ID
 ```
 
 ### Webhooks
@@ -156,6 +165,7 @@ greenshades webhooks details <webhookId>                           # Get a webho
 greenshades webhooks create <event-name> <callback-url> [hmac-key] # Create a new webhook subscription
 greenshades webhooks delete <id>                                   # Delete a webhook subscription
 greenshades webhooks subscribe <id> <event-name>                   # Add an event to an existing subscription
+greenshades webhooks tap <id> <event-name>                         # Tap into an event for an existing subscription
 greenshades webhooks unsubscribe <id> <event-name>                 # Remove an event from an existing subscription
 ```
 
