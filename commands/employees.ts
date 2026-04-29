@@ -6,7 +6,7 @@ import apiClient from '../lib/api.ts';
 
 function createEmployeeCommands() {
   const employees = new Command('employee')
-    .description('View employees in the Greenshades API (list, pull, dependents, contacts, customFields)');
+    .description('View employees in the Greenshades API (list, pull, dependents, contacts, timeoff, customFields)');
 
   employees
     .command('list')
@@ -84,6 +84,24 @@ function createEmployeeCommands() {
         console.log(chalk.green(`✅ Successfully retrieved contacts for employee ${employeeId}.`));
       } catch (error: any) {
         console.error(chalk.red(`Error fetching contacts for employee ${employeeId}:`, error.message));
+
+        process.exit(1);
+      }
+    });
+
+    employees.command('timeoff <employee-id>')
+    .description('Get a single employee\'s time off balances by their Greenshades employeeID')
+    .action(async (employeeId) => {
+      try {
+        console.log(chalk.blue(`Fetching time off balances for employee with ID: ${employeeId}...`));
+
+        const response = await apiClient.get(`/employees/${employeeId}/payroll/time-off/balances`);
+
+        console.log(JSON.stringify(response.data, null, 2));
+
+        console.log(chalk.green(`✅ Successfully retrieved time off balances for employee ${employeeId}.`));
+      } catch (error: any) {
+        console.error(chalk.red(`Error fetching time off balances for employee ${employeeId}:`, error.message));
 
         process.exit(1);
       }
