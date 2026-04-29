@@ -15,6 +15,7 @@ import createReportCommands from './commands/report.ts';
 import createPayrunCommands from './commands/payrun.ts';
 import createClassCommands from './commands/classes.ts';
 import createCustomFieldCommands from './commands/custom.ts';
+import createLogCommands from './commands/logs.ts';
 
 const program = new Command();
 
@@ -37,10 +38,10 @@ program.addCommand(createReportCommands());
 program.addCommand(createPayrunCommands());
 program.addCommand(createClassCommands());
 program.addCommand(createCustomFieldCommands());
-
+program.addCommand(createLogCommands());
 
 program.command('test')
-  .description('Use this command to verify that the CLI is set up correctly and can execute commands without errors.\n')
+  .description('Use this command to verify that the CLI is set up correctly and can execute commands without errors.\n\n')
   .action(() => {
     console.log(chalk.green('✅ GreenShades CLI is set up correctly!'));
   });

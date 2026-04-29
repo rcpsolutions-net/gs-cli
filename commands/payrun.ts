@@ -4,7 +4,7 @@ import apiClient from '../lib/api.ts';
 
 function createPayrunCommands() {
   const department = new Command('payruns')
-    .description('View departments in the Greenshades API (list, details)');
+    .description('View payruns in the Greenshades API (list, info, employee)');
 
   department
     .command('list')  
