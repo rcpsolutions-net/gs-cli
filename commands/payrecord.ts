@@ -63,8 +63,8 @@ function createPayrecordCommands() {
                 endDate: format(endDate, 'yyyy-MM-dd'),
                 after: GsCursor,
               }
-            }).catch((error: any) => {
-              console.error(chalk.red(`Error fetching page ${currentPage} of paystubs:`, error.message));
+            }).catch((error: any) => {              
+              console.error(chalk.red(`Error fetching page ${currentPage} of paystubs:`, error.message + ' -- X-GS-CURSOR was: ' + GsCursor + '\n' + JSON.stringify(error, null, 2) ));
 
               process.exit(1);
              });
