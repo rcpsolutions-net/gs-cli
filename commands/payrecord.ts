@@ -23,7 +23,7 @@ function createPayrecordCommands() {
         const endDate = options?.endDate ? addDays(endOfDay(new Date(options.endDate)), 1) : endOfDay(new Date());
         
         const workspaceId = config.get('GsWorkspaceId');
-        const pageSize = 2000;
+        const pageSize = 24999;
 
         let currentPage = 1;
         let lastPage = false;
@@ -65,13 +65,15 @@ function createPayrecordCommands() {
               }
             }).catch((error: any) => {
               console.error(chalk.red(`Error fetching page ${currentPage} of paystubs:`, error.message));
+
               process.exit(1);
              });
 
              let allRecordsCountBefore = allRecords.length;
 
-            let newRecords = pageResponse.data.filter((record: any) => {              
-              return !allRecords.some((existingRecord) => existingRecord.checkNumber === record.checkNumber);              
+            let newRecords = pageResponse.data.filter((record: any) => {     
+              return true;         
+              //return !allRecords.some((existingRecord) => existingRecord.checkNumber === record.checkNumber);              
             });
 
             allRecords = allRecords.concat(newRecords);
