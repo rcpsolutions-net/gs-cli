@@ -5,7 +5,7 @@
 for day in $(seq 01 31); do
     # Format day with leading zero
     day_padded=$(printf "%02d" $day)
-    date="2026-04-$day_padded"
+    date="2025-11-$day_padded"
 
     echo "Processing $date..."
     greenshades paystubs list -s $date -e $date -o json
