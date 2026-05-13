@@ -146,3 +146,4 @@ paystubs-*.json
 benefits-*.json
 cost-*.json
 timeoff-balances*.json
+placements.json

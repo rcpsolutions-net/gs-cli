@@ -78,7 +78,9 @@ function createEmployeeSettingCommands() {
 
           console.log(chalk.blueBright(`Fetching tax details for employee with Id: ${employeeId} in workspace ${workspaceId}`));
 
-          const response = await apiClient.get(`/employees/${employeeId}/payroll/taxes/${options.taxid}`);
+         // const response = await apiClient.get(`/employees/${employeeId}/payroll/taxes/${options.taxid}`);
+
+         const response = await apiClient.get(`/payroll/taxes`);
 
           if( options?.output === 'table' ) {
             console.table(response.data);
