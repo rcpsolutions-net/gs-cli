@@ -16,6 +16,7 @@ import createPayrunCommands from './commands/payrun.ts';
 import createClassCommands from './commands/classes.ts';
 import createCustomFieldCommands from './commands/custom.ts';
 import createLogCommands from './commands/logs.ts';
+import createDirectDepositCommands from './commands/direct-deposit.ts';
 
 const program = new Command();
 
@@ -29,6 +30,7 @@ program.addCommand(createAuthCommand());
 program.addCommand(createEmployeeCommands());
 program.addCommand(createPayrecordCommands());
 program.addCommand(createPayrollCommands());
+program.addCommand(createDirectDepositCommands());
 program.addCommand(createDepartmentCommands());
 program.addCommand(createWebhookCommands());
 program.addCommand(createLocationCommands());
